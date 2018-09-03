@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on 慢</title>
+    <link>https://zwild.github.io/posts/</link>
+    <description>Recent content in Posts on 慢</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>CC BY-ND 4.0</copyright>
+    <lastBuildDate>Mon, 03 Sep 2018 14:22:28 +0800</lastBuildDate>
+    
+	<atom:link href="https://zwild.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Emacs as a F# IDE (part1)</title>
+      <link>https://zwild.github.io/posts/emacs-as-a-fsharp-ide-part1/</link>
+      <pubDate>Mon, 03 Sep 2018 14:22:28 +0800</pubDate>
+      
+      <guid>https://zwild.github.io/posts/emacs-as-a-fsharp-ide-part1/</guid>
+      <description>Why Emacs Emacs need years to get familiar with. But I think it&#39;s worth it. When you are familiar with it, you can customize it as you want, you can write whatever you want in your mind in a few of elisp codes. And there are also tons of libaries available.
+F# is a great language. The fsharp-mode is full featured, and here is an introduction and some enhancement.
+How Install We use fsharp-mode for code highlight, completion, flycheck and mainly everything.</description>
+    </item>
+    
+  </channel>
+</rss>
