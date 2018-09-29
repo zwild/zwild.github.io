@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="generator" content="Hugo 0.48" />
+	<meta name="generator" content="Hugo 0.49" />
 	
 	<title>慢 - </title>
 
@@ -84,6 +84,8 @@
 			<p>Recent Posts:</p>
 			<ul>
 				
+				<li><a href="https://zwild.github.io/posts/ob-ipython-enhancement-completion-eldoc-help/">Ob-ipython Enhancement (completion eldoc help)</a></li>
+				
 				<li><a href="https://zwild.github.io/posts/emacs-as-a-fsharp-ide-part1/">Emacs as a F# IDE (part1)</a></li>
 				
 				<li><a href="https://zwild.github.io/categories/">Categories</a></li>
@@ -91,8 +93,6 @@
 				<li><a href="https://zwild.github.io/tags/emacs/">Emacs</a></li>
 				
 				<li><a href="https://zwild.github.io/tags/f/">F#</a></li>
-				
-				<li><a href="https://zwild.github.io/posts/">Posts</a></li>
 				
 			</ul>
 		</div>
@@ -108,6 +108,127 @@
 			</div>
 			<div class="col-sm-7 col-sm-offset-4 col-md-6 col-md-offset-3 col-lg-5 col-lg-offset-3 content">
 
+				
+				<div class="post">
+
+					<div class="post-heading">
+						<h1><a href="https://zwild.github.io/posts/ob-ipython-enhancement-completion-eldoc-help/">Ob-ipython Enhancement (completion eldoc help)</a></h1>
+						<span>Sep 29, 2018</span>
+					</div>
+
+					<h1 id="introduction">Introduction</h1>
+
+<p><a href="https://github.com/gregsexton/ob-ipython" title="ob-ipython">ob-ipython</a> is "an Emacs library that allows Org mode to evaluate code blocks using a Jupyter kernel (Python by default)."</p>
+
+<p>It's a great tool for you to make note and literal programming. 
+  It's easy to use comparing with <code>ein</code>. 
+  And you can make a matplot inline image in the org file comparing with <code>ob-python</code>.</p>
+
+<h1 id="problem">Problem</h1>
+
+<p>However it's not working properly when using a virtual environment.</p>
+
+<p>When you don't have a system level jupyter installed and use org-mode, you will get a strange error like below.</p>
+
+<p><img src="/img/ob-ipython-error.gif" alt="/img/ob-ipython-error.gif" title="/img/ob-ipython-error.gif" /></p>
+
+<p>It can be fixed easily. When there is no jupyter installed, we just don't configure the kernel. When the time we use a virtual environment, and there will be a jupyter installed!</p>
+
+<pre><code class="language-elisp">  (advice-add 'ob-ipython-auto-configure-kernels :around
+              (lambda (orig-fun &amp;rest args)
+                &quot;Configure the kernels when found jupyter.&quot;
+                (when (executable-find ob-ipython-command)
+                  (apply orig-fun args))))
+</code></pre>
+
+<p><img src="/img/ob-ipython-error-fix.gif" alt="/img/ob-ipython-error-fix.gif" title="/img/ob-ipython-error-fix.gif" /></p>
+
+<p>Notice: We will using a virtualenv environment called <strong>scientific</strong>, which has <code>numpy</code> and <code>jupyter</code> installed.</p>
+
+<h1 id="completion">Completion</h1>
+
+<p>The company backend in <code>ob-ipython</code> is extremely slow, which means it basic can't complete anything.</p>
+
+<p><code>ob-ipython</code> will start a backend process <code>ob-ipython-kernel</code>, sending the code to the process, and get the result. You can't have any interaction with the process for preventing you modify the "environment". But sometimes it's not convenient, we want to test some function. So we can start a <code>inferior-python</code> process, which is the process when we call <code>run-python</code>. When we evaluate our code using <code>C-c C-c</code> we also send the code to the process we started. Now we can even use the <code>inferior-python</code> process to complete the code!</p>
+
+<pre><code class="language-elisp">  (defun run-python-first (&amp;rest args)
+    &quot;Start a inferior python if there isn't one.&quot;
+    (or (comint-check-proc &quot;*Python*&quot;) (run-python)))
+
+  (advice-add 'org-babel-execute:ipython :after
+              (lambda (body params)
+                &quot;Send body to `inferior-python'.&quot;
+                (run-python-first)
+                (python-shell-send-string body)))
+</code></pre>
+
+<p><img src="/img/ob-ipython-completion.gif" alt="/img/ob-ipython-completion.gif" title="/img/ob-ipython-completion.gif" /></p>
+
+<pre><code class="language-elisp">  (add-hook 'org-mode-hook
+            (lambda ()
+              (setq-local completion-at-point-functions
+                          '(pcomplete-completions-at-point python-completion-at-point))))
+</code></pre>
+
+<p>We configure the <code>completion-at-point-function</code>, now you can use any completion backend you like.</p>
+
+<p>However, we need to evaluate the code very ofen, which will send the code to a <code>ob-ipython-kernel</code> to display the result, and meantime send the code to a <code>inferior-python</code> process to get the code completion done.</p>
+
+<h1 id="eldoc">Eldoc</h1>
+
+<p>Now we have an <code>inferior-python</code> process for testing our code and code completion. It also can be used to display the <code>eldoc</code>, too!</p>
+
+<pre><code class="language-elisp">  (defun ob-ipython-eldoc-function ()
+    (when (org-babel-where-is-src-block-head)
+      (python-eldoc-function)))
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (setq-default eldoc-documentation-function 'ob-ipython-eldoc-function)))
+</code></pre>
+
+<p><img src="/img/ob-ipython-eldoc.gif" alt="/img/ob-ipython-eldoc.gif" title="/img/ob-ipython-eldoc.gif" /></p>
+
+<h1 id="help">Help</h1>
+
+<p>Sometimes we want a full description of the package or function.</p>
+
+<p>Here's the idea: we send our code to the <code>ob-ipython-kernel</code> to get the result, we can also send <strong>help(package or function name)</strong> (e.g. help(os.path.join)) to the <code>ob-ipython-kernel</code> to get the help information, and display it in a separate buffer, just like what we type in a <code>inferior-python</code> process!</p>
+
+<p><img src="/img/ob-ipython-help.gif" alt="/img/ob-ipython-help.gif" title="/img/ob-ipython-help.gif" /></p>
+
+<pre><code class="language-elisp">  (defun ob-ipython-help (symbol)
+    (interactive (list (read-string &quot;Symbol: &quot; (python-eldoc--get-symbol-at-point))))
+    (unless (org-babel-where-is-src-block-head)
+      (error &quot;Symbol is not in src block.&quot;))
+    (unless (ob-ipython--get-kernel-processes)
+      (error &quot;There is no ob-ipython-kernal running.&quot;))
+    (when-let* ((processes  (ob-ipython--get-kernel-processes))
+                (session (caar processes))
+                (ret (ob-ipython--eval
+                      (ob-ipython--execute-request (format &quot;help(%s)&quot; symbol) session))))
+      (let ((result (cdr (assoc :result ret)))
+            (output (cdr (assoc :output ret))))
+        (let ((buf (get-buffer-create &quot;*ob-ipython-doc*&quot;)))
+          (with-current-buffer buf
+            (let ((inhibit-read-only t))
+              (erase-buffer)
+              (insert output)
+              (goto-char (point-min))
+              (read-only-mode t)
+              (pop-to-buffer buf)))))))
+</code></pre>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>We evaluate our code and get the full doc using the <code>ob-ipython-kernel</code>.</p>
+
+<p>We start a <code>inferior-python</code> process to test out code, get the completion and eldoc done.</p>
+
+<p>You can get all the <a href="https://github.com/zwild/dotfiles/blob/master/emacs.d/lisp/python-conf.el#L91" title="code">code</a> here. Thanks for your time.</p>
+
+
+				</div>
 				
 				<div class="post">
 

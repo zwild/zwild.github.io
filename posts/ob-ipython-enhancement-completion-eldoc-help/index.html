@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="generator" content="Hugo 0.49" />
 	
-	<title>Tech - </title>
+	<title>Ob-ipython Enhancement (completion eldoc help) - </title>
 
 	
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
@@ -108,12 +108,27 @@
 			</div>
 			<div class="col-sm-7 col-sm-offset-4 col-md-6 col-md-offset-3 col-lg-5 col-lg-offset-3 content">
 
-				
 				<div class="post">
 
 					<div class="post-heading">
-						<h1><a href="https://zwild.github.io/posts/ob-ipython-enhancement-completion-eldoc-help/">Ob-ipython Enhancement (completion eldoc help)</a></h1>
-						<span>Sep 29, 2018</span>
+					    <h1>Ob-ipython Enhancement (completion eldoc help)</h1>
+
+                        
+                        
+
+                        <span class="post-date"><a href="https://zwild.github.io/posts/ob-ipython-enhancement-completion-eldoc-help/"># Sep 29, 2018</a></span>
+
+                        <br />
+                        
+                        tags:
+                          
+                            <a href="/tags/emacs">emacs,</a>
+                          
+                            <a href="/tags/python">python</a>
+                          
+                        
+
+                        
 					</div>
 
 					<h1 id="introduction">Introduction</h1>
@@ -229,209 +244,6 @@
 
 
 				</div>
-				
-				<div class="post">
-
-					<div class="post-heading">
-						<h1><a href="https://zwild.github.io/posts/emacs-as-a-fsharp-ide-part1/">Emacs as a F# IDE (part1)</a></h1>
-						<span>Sep 3, 2018</span>
-					</div>
-
-					<h1 id="why-emacs">Why Emacs</h1>
-
-<p>Emacs need years to get familiar with. But I think it's worth it. When you are familiar with it, you can customize it as you want, you can write whatever you want in your mind in a few of elisp codes. And there are also tons of libaries available.</p>
-
-<p>F# is a great language. The <a href="https://github.com/fsharp/emacs-fsharp-mode" title="fsharp-mode">fsharp-mode</a> is full featured, and here is an introduction and some enhancement.</p>
-
-<h1 id="how">How</h1>
-
-<h2 id="install">Install</h2>
-
-<p>We use <a href="https://github.com/fsharp/emacs-fsharp-mode" title="fsharp-mode">fsharp-mode</a> for code highlight, completion, flycheck and mainly everything. And we use <a href="https://github.com/juergenhoetzel/ob-fsharp" title="ob-fsharp">ob-fsharp</a> for code evaluating in org-mode.</p>
-
-<pre><code class="language-lisp">(require-package 'fsharp-mode 'ob-fsharp)
-</code></pre>
-
-<p>The libraries are avalible at <a href="https://melpa.org/" title="melpa">melpa</a>. Here is the definition of <code>require-package</code>.</p>
-
-<pre><code class="language-lisp">(defun require-package (&amp;rest packages)
-  (dolist (p packages)
-    (unless (package-installed-p p)
-      (condition-case nil (package-install p)
-        (error
-         (package-refresh-contents)
-         (package-install p))))))
-</code></pre>
-
-<h2 id="completion-code-check-type-signature">Completion, Code Check, Type Signature</h2>
-
-<p>Code completion, code checking and displaying type signature will work when you setup your project correctly and download all the F# dependencies you need for the project.</p>
-
-<p><img src="/img/completion.gif" alt="/img/completion.gif" title="/img/completion.gif" /></p>
-
-<p><img src="/img/flycheck.gif" alt="/img/flycheck.gif" title="/img/flycheck.gif" /></p>
-
-<p><img src="/img/eldoc.png" alt="/img/eldoc.png" title="/img/eldoc.png" /></p>
-
-<h2 id="jump-to-definition">Jump to definition</h2>
-
-<p><img src="/img/jump.gif" alt="/img/jump.gif" title="/img/jump.gif" /></p>
-
-<p>They are bound to <code>M-.</code> and <code>M-,</code>.</p>
-
-<h2 id="indentation">Indentation</h2>
-
-<p><a href="https://github.com/fsprojects/fantomas" title="Fontomas">Fontomas</a> is a F# source code formatter. 
-   But there isn't a elisp library for it.
-   However we can write it.</p>
-
-<pre><code class="language-lisp">(defun fsharp-fantomas-format-region (start end)
-  (interactive &quot;r&quot;)
-  (let ((source (shell-quote-argument (buffer-substring-no-properties start end)))
-        (ok-buffer &quot;*fantomas*&quot;)
-        (error-buffer &quot;*fantomas-errors*&quot;))
-    (save-window-excursion
-      (shell-command-on-region
-       start end (format &quot;fantomas --indent 2 --pageWidth 99 --stdin %s --stdout&quot; source)
-       ok-buffer nil error-buffer)
-      (if (get-buffer error-buffer)
-          (progn
-            (kill-buffer error-buffer)
-            (message &quot;Can't format region.&quot;))
-        (delete-region start end)
-        (insert (with-current-buffer ok-buffer
-                  (s-chomp (buffer-string))))
-        (delete-trailing-whitespace)
-        (message &quot;Region formatted.&quot;)))))
-</code></pre>
-
-<p><img src="/img/indent-region.gif" alt="/img/indent-region.gif" title="/img/indent-region.gif" /></p>
-
-<pre><code class="language-lisp">(defun fsharp-fantomas-format-defun ()
-  (interactive)
-  (let ((origin (point))
-        (start) (end))
-    (fsharp-beginning-of-block)
-    (setq start (point))
-    (fsharp-end-of-block)
-    ;; skip whitespace, empty lines, comments
-    (while (and (not (= (line-number-at-pos) 1))
-                (s-matches? &quot;^\n$\\|^//\\|^(\\*&quot; (thing-at-point 'line)))
-      (forward-line -1))
-    (move-end-of-line 1)
-    (setq end (point))
-    (fsharp-fantomas-format-region start end)
-    (goto-char origin)))
-</code></pre>
-
-<p><img src="/img/indent-defun.gif" alt="/img/indent-defun.gif" title="/img/indent-defun.gif" /></p>
-
-<pre><code class="language-lisp">(defun fsharp-fantomas-format-buffer ()
-  (interactive)
-  (let ((origin (point)))
-    (fsharp-fantomas-format-region (point-min) (point-max))
-    (goto-char origin)))
-</code></pre>
-
-<h2 id="load-file-to-inferior-buffer">Load file to inferior buffer</h2>
-
-<p>fsharp-mode provide <code>fsharp-load-buffer-file</code>, which load the current buffer to the inferior fsharp process. 
-   However when you need to load some other files as dependencies, you don't have a function like <code>fsharp-load-file</code>. Here is one:</p>
-
-<pre><code class="language-lisp">(defun fsharp-load-file (file-name)
-  (interactive (comint-get-source &quot;Load F# file: &quot; nil '(fsharp-mode) t))
-  (let ((command (concat &quot;#load \&quot;&quot; file-name &quot;\&quot;&quot;)))
-    (comint-check-source file-name)
-    (fsharp-simple-send inferior-fsharp-buffer-name command)))
-</code></pre>
-
-<p><img src="/img/load-file.gif" alt="/img/load-file.gif" title="/img/load-file.gif" /></p>
-
-<h2 id="add-file-to-fsproj">Add file to fsproj</h2>
-
-<p>When you edit a new F# file, you need to write it to the fsproj file.
-   And when you delete a F# file, you need to remove it from the fsproj file, too.</p>
-
-<pre><code class="language-lisp">(defun fsharp-add-this-file-to-proj ()
-  (interactive)
-  (when-let* ((file-long (f-this-file))
-              (project (fsharp-mode/find-fsproj file-long))
-              (file (f-filename file-long)))
-    (with-current-buffer (find-file-noselect project)
-      (goto-char (point-min))
-      (unless (re-search-forward file nil t)
-        (when (and (re-search-forward &quot;&lt;Compile Include=&quot; nil t)
-                   (re-search-backward &quot;&lt;&quot; nil t))
-          (insert (format &quot;&lt;Compile Include=\&quot;%s\&quot; /&gt;\n    &quot; file))
-          (save-buffer))))))
-</code></pre>
-
-<pre><code class="language-lisp">(defun fsharp-remove-this-file-from-proj ()
-  (interactive)
-  (when-let* ((file-long (f-this-file))
-              (project (fsharp-mode/find-fsproj file-long))
-              (file (f-filename file-long)))
-    (with-current-buffer (find-file-noselect project)
-      (goto-char (point-min))
-      (when (re-search-forward (format &quot;&lt;Compile Include=\&quot;%s\&quot; /&gt;&quot; file) nil t)
-        (move-beginning-of-line 1)
-        (kill-line)
-        (kill-line)
-        (save-buffer)))))
-</code></pre>
-
-<p><img src="/img/add-to-proj.gif" alt="/img/add-to-proj.gif" title="/img/add-to-proj.gif" /></p>
-
-<h2 id="compile-the-project">Compile the project</h2>
-
-<p>This definition will change the compile directory based on the project type(fake, dotnet), and call <code>compile</code> interactively.</p>
-
-<pre><code class="language-lisp">(defun fsharp-compile-project ()
-  &quot;Compile project using fake or dotnet.&quot;
-  (interactive)
-  (let ((fake-dir (locate-dominating-file default-directory &quot;build.fsx&quot;))
-        (proj (fsharp-mode/find-fsproj (or (f-this-file) &quot;&quot;))))
-    (cond (fake-dir (let ((default-directory fake-dir)
-                          (compile-command &quot;fake build&quot;))
-                      (call-interactively 'compile)))
-          (proj (let ((compile-command (format &quot;dotnet build \&quot;%s\&quot;&quot; proj)))
-                  (call-interactively 'compile)))
-          (t (call-interactively 'compile)))))
-</code></pre>
-
-<p><img src="/img/fsharp-compile-project.gif" alt="/img/fsharp-compile-project.gif" title="/img/fsharp-compile-project.gif" /></p>
-
-<h2 id="prettify-symbols">Prettify symbols</h2>
-
-<p>You can change the symbols using <code>prettify-symbols-mode</code>.</p>
-
-<pre><code class="language-lisp">(defun fsharp-enable-prettify-symbols ()
-  (let ((alist '((&quot;-&gt;&quot; . ?→)
-                 (&quot;&lt;-&quot; . ?←)
-                 (&quot;|&gt;&quot; . ?⊳)
-                 (&quot;&lt;|&quot; . ?⊲))))
-    (setq-local prettify-symbols-alist alist)))
-
-(add-hook 'fsharp-mode-hook
-          (lambda ()
-            (fsharp-enable-prettify-symbols)))
-</code></pre>
-
-<p><img src="/img/prettify.png" alt="/img/prettify.png" title="/img/prettify.png" /></p>
-
-<h2 id="manage-project">Manage project</h2>
-
-<p>I use <code>eshell</code> to init, install, test, run and compile a F# project. I will introduce how to use that and how to write completion for eshell in the next post.</p>
-
-<p><img src="/img/eshell-dotnet-demo.gif" alt="/img/eshell-dotnet-demo.gif" title="/img/eshell-dotnet-demo.gif" /></p>
-
-<h1 id="conclusion">Conclusion</h1>
-
-<p>You can get all the <a href="https://github.com/zwild/dotfiles/blob/master/emacs.d/lisp/fsharp-conf.el" title="code">code</a> here.</p>
-
-
-				</div>
-				
 
 			</div>
 			<div class="col-sm-1 col-md-3 col-md-4">
