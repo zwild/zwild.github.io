@@ -149,7 +149,7 @@
 
 <p>It can be fixed easily. When there is no jupyter installed, we just don't configure the kernel. When the time we use a virtual environment, and there will be a jupyter installed!</p>
 
-<pre><code class="language-elisp">  (advice-add 'ob-ipython-auto-configure-kernels :around
+<pre><code class="language-lisp">  (advice-add 'ob-ipython-auto-configure-kernels :around
               (lambda (orig-fun &amp;rest args)
                 &quot;Configure the kernels when found jupyter.&quot;
                 (when (executable-find ob-ipython-command)
@@ -166,7 +166,7 @@
 
 <p><code>ob-ipython</code> will start a backend process <code>ob-ipython-kernel</code>, sending the code to the process, and get the result. You can't have any interaction with the process for preventing you modify the "environment". But sometimes it's not convenient, we want to test some function. So we can start a <code>inferior-python</code> process, which is the process when we call <code>run-python</code>. When we evaluate our code using <code>C-c C-c</code> we also send the code to the process we started. Now we can even use the <code>inferior-python</code> process to complete the code!</p>
 
-<pre><code class="language-elisp">  (defun run-python-first (&amp;rest args)
+<pre><code class="language-lisp">  (defun run-python-first (&amp;rest args)
     &quot;Start a inferior python if there isn't one.&quot;
     (or (comint-check-proc &quot;*Python*&quot;) (run-python)))
 
@@ -179,7 +179,7 @@
 
 <p><img src="/img/ob-ipython-completion.gif" alt="/img/ob-ipython-completion.gif" title="/img/ob-ipython-completion.gif" /></p>
 
-<pre><code class="language-elisp">  (add-hook 'org-mode-hook
+<pre><code class="language-lisp">  (add-hook 'org-mode-hook
             (lambda ()
               (setq-local completion-at-point-functions
                           '(pcomplete-completions-at-point python-completion-at-point))))
@@ -193,7 +193,7 @@
 
 <p>Now we have an <code>inferior-python</code> process for testing our code and code completion. It also can be used to display the <code>eldoc</code>, too!</p>
 
-<pre><code class="language-elisp">  (defun ob-ipython-eldoc-function ()
+<pre><code class="language-lisp">  (defun ob-ipython-eldoc-function ()
     (when (org-babel-where-is-src-block-head)
       (python-eldoc-function)))
 
@@ -212,7 +212,7 @@
 
 <p><img src="/img/ob-ipython-help.gif" alt="/img/ob-ipython-help.gif" title="/img/ob-ipython-help.gif" /></p>
 
-<pre><code class="language-elisp">  (defun ob-ipython-help (symbol)
+<pre><code class="language-lisp">  (defun ob-ipython-help (symbol)
     (interactive (list (read-string &quot;Symbol: &quot; (python-eldoc--get-symbol-at-point))))
     (unless (org-babel-where-is-src-block-head)
       (error &quot;Symbol is not in src block.&quot;))
