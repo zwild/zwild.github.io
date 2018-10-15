@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Emacs on 慢</title>
+    <link>https://zwild.github.io/tags/emacs/</link>
+    <description>Recent content in Emacs on 慢</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>CC BY-ND 4.0</copyright>
+    <lastBuildDate>Sat, 29 Sep 2018 12:15:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://zwild.github.io/tags/emacs/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ob-ipython Enhancement (completion eldoc help)</title>
+      <link>https://zwild.github.io/posts/ob-ipython-enhancement-completion-eldoc-help/</link>
+      <pubDate>Sat, 29 Sep 2018 12:15:00 +0800</pubDate>
+      
+      <guid>https://zwild.github.io/posts/ob-ipython-enhancement-completion-eldoc-help/</guid>
+      <description>Introduction ob-ipython is &#34;an Emacs library that allows Org mode to evaluate code blocks using a Jupyter kernel (Python by default).&#34;
+It&#39;s a great tool for you to make note and literal programming. It&#39;s easy to use comparing with ein. And you can make a matplot inline image in the org file comparing with ob-python.
+Problem However it&#39;s not working properly when using a virtual environment.
+When you don&#39;t have a system level jupyter installed and use org-mode, you will get a strange error like below.</description>
+    </item>
+    
+    <item>
+      <title>Emacs as a F# IDE (part1)</title>
+      <link>https://zwild.github.io/posts/emacs-as-a-fsharp-ide-part1/</link>
+      <pubDate>Mon, 03 Sep 2018 14:22:28 +0800</pubDate>
+      
+      <guid>https://zwild.github.io/posts/emacs-as-a-fsharp-ide-part1/</guid>
+      <description>Why Emacs Emacs need years to get familiar with. But I think it&#39;s worth it. When you are familiar with it, you can customize it as you want, you can write whatever you want in your mind in a few of elisp codes. And there are also tons of libaries available.
+F# is a great language. The fsharp-mode is full featured, and here is an introduction and some enhancement.
+How Install We use fsharp-mode for code highlight, completion, flycheck and mainly everything.</description>
+    </item>
+    
+  </channel>
+</rss>
