@@ -7,13 +7,40 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>CC BY-ND 4.0</copyright>
-    <lastBuildDate>Sat, 29 Sep 2018 12:15:00 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 11 May 2019 17:03:15 +0800</lastBuildDate>
     
 	<atom:link href="https://zwild.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Emacs</title>
+      <title>breeze,</title>
+      <link>https://zwild.github.io/tags/breeze/</link>
+      <pubDate>Sat, 11 May 2019 17:03:15 +0800</pubDate>
+      
+      <guid>https://zwild.github.io/tags/breeze/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>plot</title>
+      <link>https://zwild.github.io/tags/plot/</link>
+      <pubDate>Sat, 11 May 2019 17:03:15 +0800</pubDate>
+      
+      <guid>https://zwild.github.io/tags/plot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>scala,</title>
+      <link>https://zwild.github.io/tags/scala/</link>
+      <pubDate>Sat, 11 May 2019 17:03:15 +0800</pubDate>
+      
+      <guid>https://zwild.github.io/tags/scala/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>emacs</title>
       <link>https://zwild.github.io/tags/emacs/</link>
       <pubDate>Sat, 29 Sep 2018 12:15:00 +0800</pubDate>
       
@@ -22,20 +49,20 @@
     </item>
     
     <item>
-      <title>Fsharp</title>
-      <link>https://zwild.github.io/tags/fsharp/</link>
-      <pubDate>Mon, 03 Sep 2018 14:22:28 +0800</pubDate>
-      
-      <guid>https://zwild.github.io/tags/fsharp/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Python</title>
+      <title>python</title>
       <link>https://zwild.github.io/tags/python/</link>
       <pubDate>Sat, 29 Sep 2018 12:15:00 +0800</pubDate>
       
       <guid>https://zwild.github.io/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>fsharp,</title>
+      <link>https://zwild.github.io/tags/fsharp/</link>
+      <pubDate>Mon, 03 Sep 2018 14:22:28 +0800</pubDate>
+      
+      <guid>https://zwild.github.io/tags/fsharp/</guid>
       <description></description>
     </item>
     

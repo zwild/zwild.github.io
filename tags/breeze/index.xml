@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>breeze, on 慢</title>
+    <link>https://zwild.github.io/tags/breeze/</link>
+    <description>Recent content in breeze, on 慢</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>CC BY-ND 4.0</copyright>
+    <lastBuildDate>Sat, 11 May 2019 17:03:15 +0800</lastBuildDate>
+    
+	<atom:link href="https://zwild.github.io/tags/breeze/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Plotly Examples for Scala</title>
+      <link>https://zwild.github.io/posts/plotly-examples-for-scala/</link>
+      <pubDate>Sat, 11 May 2019 17:03:15 +0800</pubDate>
+      
+      <guid>https://zwild.github.io/posts/plotly-examples-for-scala/</guid>
+      <description>Introduction Breeze is a numerical processing library for Scala. It&#39;s a great tool for data science and machine learning. It&#39;s also used by Spark.
+Visualization is important for data science and machine learning. Breeze provide breeze-viz for this. However it has only 4 kinds of plots -- line, scatter, histogram and image.
+plotly-scala is the Scala bindings for plotly.js. It support a few of plots provided by plotly.
+Here are some examples of both libraries based on their documentations.</description>
+    </item>
+    
+  </channel>
+</rss>

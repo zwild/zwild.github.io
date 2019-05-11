@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.55.5" />
+    
+    <title>Plotly Examples for Scala - </title>
+
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link href="https://zwild.github.io/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://zwild.github.io/css/strange-case.css" rel="stylesheet">
+    
+
+    
+    
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="https://cdn.bootcss.com/highlight.js/9.15.6/styles/routeros.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/highlight.js/9.15.6/highlight.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.15.6/languages/lisp.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.15.6/languages/python.min.js"></script>
+    <script src="https://cdn.bootcss.com/highlight.js/9.15.6/languages/scala.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+ MathJax.Hub.Config({
+     displayAlign: "left",
+ });
+</script>
+
+<style>
+ .MathJax_Display {
+     font-size: 0.8em;
+ }
+</style>
+
+    <style>
+ table {
+     margin-bottom: 1rem;
+     width: 100%;
+     border: 1px solid #ccc;
+     border-collapse: collapse;
+ }
+
+ td, th {
+     padding: .25rem .5rem;
+     border: 1px solid #ccc;
+ }
+
+ tbody tr:nth-child(odd) td, tbody tr:nth-child(odd) th {
+     background-color: #f5f5f5;
+ }
+</style>
+
+</head>
+<body class="">
+
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-4 col-md-3 col-lg-3 sidebar">
+
+			
+	<div class="sidebar-content">
+
+		<a href="https://zwild.github.io"><h1>慢</h1></a>
+		<p></p>
+
+		
+
+		<ul class="sidebar-menus">
+			
+				<li>&#187; <a href="/categories/tech/">技術分享</a> <span class='glyphicon'></span></li>
+			
+		</ul>
+
+		<div class="sidebar-recent hidden-xs">
+			<p>Recent Posts:</p>
+			<ul>
+				
+				<li><a href="https://zwild.github.io/categories/">Categories</a></li>
+				
+				<li><a href="https://zwild.github.io/posts/plotly-examples-for-scala/">Plotly Examples for Scala</a></li>
+				
+				<li><a href="https://zwild.github.io/posts/">Posts</a></li>
+				
+				<li><a href="https://zwild.github.io/tags/">Tags</a></li>
+				
+				<li><a href="https://zwild.github.io/tags/breeze/">breeze,</a></li>
+				
+			</ul>
+		</div>
+
+        <p class="copyright"><a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nd/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/">Creative Commons Attribution-NoDerivatives 4.0 International License</a>.</p>
+
+		<p class="attr">Powered by <a href="http://gohugo.io">Hugo</a> &amp; <a href="https://github.com/ExchangeRate-API/strange-case">Strange Case</a> (inspired by <a href="https://github.com/poole/hyde">Hyde</a>).</p>
+	</div>
+
+
+			</div>
+			<div class="col-sm-7 col-sm-offset-4 col-md-6 col-md-offset-3 col-lg-5 col-lg-offset-3 content">
+
+				<div class="post">
+
+					<div class="post-heading">
+					    <h1>Plotly Examples for Scala</h1>
+
+                        
+                        
+
+                        <span class="post-date"><a href="https://zwild.github.io/posts/plotly-examples-for-scala/"># May 11, 2019</a></span>
+
+                        <br />
+                        
+                        tags:
+                          
+                            <a href="/tags/scala">scala,</a>
+                          
+                            <a href="/tags/breeze">breeze,</a>
+                          
+                            <a href="/tags/plot">plot</a>
+                          
+                        
+
+                        
+					</div>
+
+					<h1 id="introduction">Introduction</h1>
+
+<p><a href="https://github.com/scalanlp/breeze" title="Breeze">Breeze</a> is a numerical processing library for Scala. It's a great tool for data science and machine learning. It's also used by Spark.</p>
+
+<p>Visualization is important for data science and machine learning. Breeze provide breeze-viz for this. However it has only 4 kinds of plots -- line, scatter, histogram and image.</p>
+
+<p><a href="https://github.com/alexarchambault/plotly-scala" title="plotly-scala">plotly-scala</a> is the Scala bindings for plotly.js. It support a few of plots provided by plotly.</p>
+
+<p>Here are some examples of both libraries based on their documentations.</p>
+
+<h2 id="breeze-viz">Breeze-viz</h2>
+
+<pre><code class="language-scala">import $ivy.`org.scalanlp::breeze:0.13.2`
+import $ivy.`org.scalanlp::breeze-natives:0.13.2`
+import $ivy.`org.scalanlp::breeze-viz:0.13.2`
+import breeze.linalg._
+import breeze.numerics._
+import breeze.plot._
+
+val fig = Figure()
+
+val p = fig.subplot(0)
+val x = linspace(0.0, 1.0)
+p += plot(x, x ^:^ 2.0)
+p += plot(x, x ^:^ 3.0, '.')
+p.title = &quot;lines plotting&quot;
+p.xlabel = &quot;x axis&quot;
+p.ylabel = &quot;y axis&quot;
+
+val p2 = fig.subplot(2, 2, 1)
+val g2 = breeze.stats.distributions.Gaussian(0, 1)
+p2 += hist(g2.sample(100000), 100)
+p2.title = &quot;A normal distribution&quot;
+
+val p3 = fig.subplot(2, 2, 2)
+val x3 = linspace(0.0, 1.0, 100)
+val size3 = 0.1 * DenseVector.rand(100)
+p3 += scatter(x3, x3 ^:^ 2.0, size3.apply)
+p3.title = &quot;scatter plotting&quot;
+
+val p4 = fig.subplot(2, 2, 3)
+p4 += image(DenseMatrix.rand(200, 200))
+p4.title = &quot;A random distribution&quot;
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/viz.png" alt="/img/PlotlyExamplesforScala/viz.png" title="/img/PlotlyExamplesforScala/viz.png" /></p>
+
+<h2 id="plotly">Plotly</h2>
+
+<pre><code class="language-scala">import $ivy.`org.plotly-scala::plotly-render:0.5.4`
+import plotly._, element._, layout._, Plotly._
+
+import $ivy.`org.scalanlp::breeze:0.13.2`
+import breeze.linalg.DenseVector
+
+implicit def fromDenseVectorDouble(v: DenseVector[Double]): Sequence = v.toArray.toVector
+implicit def fromDenseVectorString(v: DenseVector[String]): Sequence = v.toArray.toVector
+</code></pre>
+
+<h3 id="scatter-and-line">Scatter and Line</h3>
+
+<pre><code class="language-scala">val trace1 = Scatter(
+  Seq(1, 2, 3, 4),
+  Seq(10, 15, 13, 17),
+  name = &quot;marker&quot;,
+  mode = ScatterMode(ScatterMode.Markers))
+
+val trace2 = Scatter(
+  Seq(2, 3, 4, 5),
+  Seq(16, 5, 11, 9),
+  name = &quot;line&quot;,
+  mode = ScatterMode(ScatterMode.Lines),
+  line = Line(dash = Dash.Dot))
+
+val trace3 = Scatter(
+  Seq(1, 2, 3, 4),
+  Seq(12, 9, 15, 12),
+  name = &quot;line and marker&quot;,
+  mode = ScatterMode(ScatterMode.Lines, ScatterMode.Markers))
+
+Seq(trace1, trace2, trace3).plot(title = &quot;Line and Scatter Plot&quot;)
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/line.png" alt="/img/PlotlyExamplesforScala/line.png" title="/img/PlotlyExamplesforScala/line.png" /></p>
+
+<pre><code class="language-scala">val trace1 = Scatter(
+  Seq(1, 2, 3, 4, 5),
+  Seq(1, 6, 3, 6, 1),
+  mode = ScatterMode(ScatterMode.Markers, ScatterMode.Text),
+  name = &quot;Team A&quot;,
+  text = Seq(&quot;A-1&quot;, &quot;A-2&quot;, &quot;A-3&quot;, &quot;A-4&quot;, &quot;A-5&quot;),
+  textposition = TextPosition.TopCenter,
+  textfont = TextFont(&quot;Raleway, sans-serif&quot;),
+  marker = Marker(size = 12))
+
+val trace2 = Scatter(
+  Seq(1.5, 2.5, 3.5, 4.5, 5.5),
+  Seq(4, 1, 7, 1, 4),
+  mode = ScatterMode(ScatterMode.Markers, ScatterMode.Text),
+  name = &quot;Team B&quot;,
+  text = Seq(&quot;B-a&quot;, &quot;B-b&quot;, &quot;B-c&quot;, &quot;B-d&quot;, &quot;B-e&quot;),
+  textposition = TextPosition.BottomCenter,
+  textfont = TextFont(&quot;Times New Roman&quot;),
+  marker = Marker(
+    size = 20,
+    color = Color.RGB(142, 124, 195)))
+
+Seq(trace1, trace2).plot(
+  &quot;scatter.html&quot;,
+  Layout(
+    title = &quot;Data Labels on The Plot&quot;,
+    xaxis = Axis(
+      range = (0.75, 5.25),
+      title = &quot;x line title&quot;,
+      showgrid = false,
+      zeroline = false),
+    yaxis = Axis(
+      range = (0, 8),
+      title = &quot;y line title&quot;,
+      showline = false)),
+  false,
+  true,
+  true)
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/scatter.png" alt="/img/PlotlyExamplesforScala/scatter.png" title="/img/PlotlyExamplesforScala/scatter.png" /></p>
+
+<h3 id="bubble">Bubble</h3>
+
+<pre><code class="language-scala">val trace1 = Scatter(
+  1 to 4,
+  10 to 13,
+  mode = ScatterMode(ScatterMode.Markers),
+  text = Seq(&quot;A&lt;br&gt;size: 40&quot;, &quot;B&lt;br&gt;size: 60&quot;, &quot;C&lt;br&gt;size: 80&quot;, &quot;D&lt;br&gt;size: 100&quot;),
+  marker = Marker(
+    color = Seq(Color.RGB(93, 164, 214), Color.RGB(255, 144, 14), Color.RGB(44, 160, 101), Color.RGB(255, 65, 54)),
+    opacity = Seq(1, 0.8, 0.6, 0.4),
+    size = Seq(40, 60, 80, 100),
+    symbol = Seq(Symbol.Circle(), Symbol.Square(), Symbol.Diamond(), Symbol.Cross())))
+
+Seq(trace1).plot(
+  &quot;bubble.html&quot;,
+  Layout(
+    title = &quot;Bubble Chart Hover Text&quot;,
+    showlegend = false,
+    height = 600,
+    width = 600),
+  false,
+  true,
+  true)
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/bubble.png" alt="/img/PlotlyExamplesforScala/bubble.png" title="/img/PlotlyExamplesforScala/bubble.png" /></p>
+
+<h3 id="bar">Bar</h3>
+
+<pre><code class="language-scala">val monthes = Seq(&quot;Jan&quot;, &quot;Feb&quot;, &quot;Mar&quot;, &quot;Apr&quot;, &quot;May&quot;, &quot;Jun&quot;, &quot;Jul&quot;, &quot;Aug&quot;, &quot;Sep&quot;, &quot;Oct&quot;, &quot;Nov&quot;, &quot;Dec&quot;)
+
+val trace1 = Bar(
+  monthes,
+  Seq(20, 14, 25, 16, 18, 22, 19, 15, 12, 16, 14, 17),
+  &quot;Primary Product&quot;,
+  text = monthes.map(x =&gt; x + &quot;!&quot;),
+  // orientation = Orientation.Horizontal,
+  marker = Marker(
+    color = Color.RGB(49, 130, 189),
+    opacity = 0.7))
+
+val trace2 = Bar(
+  monthes,
+  Seq(19, 14, 22, 14, 16, 19, 15, 14, 10, 12, 12, 16),
+  &quot;Secondary Product&quot;,
+  text = monthes.map(x =&gt; x + &quot;?&quot;),
+  // orientation = Orientation.Horizontal,
+  marker = Marker(
+    color = Color.RGB(204, 204, 204),
+    opacity = 0.5))
+
+Seq(trace1, trace2).plot(
+  &quot;bar.html&quot;,
+  Layout(
+    title = &quot;2013 Sales Report&quot;,
+    xaxis = Axis(tickangle = -45),
+    yaxis = Axis(
+      title = &quot;Amount&quot;,
+      titlefont = Font(size = 20, color = Color.RGB(107, 107, 107))),
+    barmode = BarMode.Group,
+    bargroupgap = 0.1),
+  false,
+  true,
+  true)
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/bar.png" alt="/img/PlotlyExamplesforScala/bar.png" title="/img/PlotlyExamplesforScala/bar.png" /></p>
+
+<h3 id="filled-area">Filled Area</h3>
+
+<pre><code class="language-scala">val trace1 = Scatter(
+  1 to 4,
+  Seq(0, 2, 3, 5),
+  fill = Fill.ToZeroY)
+
+val trace2 = Scatter(
+  1 to 4,
+  Seq(3, 5, 1, 7),
+  fill = Fill.ToZeroY)
+
+Seq(trace1, trace2).plot()
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/area.png" alt="/img/PlotlyExamplesforScala/area.png" title="/img/PlotlyExamplesforScala/area.png" /></p>
+
+<h3 id="time-series">Time Series</h3>
+
+<pre><code class="language-scala">val src = scala.io.Source.fromFile(&quot;finance-charts-apple.csv&quot;)
+val headers = src.getLines.take(1).next.split(&quot;,&quot;)
+val datesBuf = collection.mutable.ArrayBuffer.empty[String]
+val highsBuf = collection.mutable.ArrayBuffer.empty[Double]
+val lowsBuf = collection.mutable.ArrayBuffer.empty[Double]
+
+for (line &lt;- src.getLines.map(_.split(&quot;,&quot;))) {
+  datesBuf += line(headers.indexOf(&quot;Date&quot;))
+  highsBuf += line(headers.indexOf(&quot;AAPL.High&quot;)).toDouble
+  lowsBuf += line(headers.indexOf(&quot;AAPL.Low&quot;)).toDouble
+}
+
+val dates = DenseVector(datesBuf.toArray)
+val highs = DenseVector(highsBuf.toArray)
+val lows = DenseVector(lowsBuf.toArray)
+
+val trace1 = Scatter(
+  dates,
+  highs,
+  mode = ScatterMode(ScatterMode.Lines),
+  line = Line(color = Color.StringColor(&quot;#17BECF&quot;)))
+
+val trace2 = Scatter(
+  dates,
+  lows,
+  mode = ScatterMode(ScatterMode.Lines),
+  line = Line(color = Color.StringColor(&quot;#7F7F7F&quot;)))
+
+Seq(trace1, trace2).plot(title = &quot;Time Series&quot;)
+src.close()
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/time.png" alt="/img/PlotlyExamplesforScala/time.png" title="/img/PlotlyExamplesforScala/time.png" /></p>
+
+<h3 id="subplots">Subplots</h3>
+
+<pre><code class="language-scala">val data = Seq(1, 2)
+
+val trace1 = Scatter(
+  data,
+  data,
+  name = &quot;(1,1)&quot;)
+
+val trace2 = Scatter(
+  data,
+  data,
+  name = &quot;(1,2)&quot;,
+  xaxis = AxisReference.X2,
+  yaxis = AxisReference.Y2)
+
+val trace3 = Scatter(
+  data,
+  data,
+  name = &quot;(1,2)&quot;,
+  xaxis = AxisReference.X3,
+  yaxis = AxisReference.Y3)
+
+val trace4 = Scatter(
+  data,
+  data,
+  name = &quot;(1,2)&quot;,
+  xaxis = AxisReference.X4,
+  yaxis = AxisReference.Y4)
+
+Seq(trace1, trace2, trace3, trace4).plot(
+  &quot;subplots.html&quot;,
+  Layout(
+    title = &quot;Mulitple Custom Sized Subplots&quot;,
+    xaxis = Axis(
+      anchor = AxisAnchor.Reference(AxisReference.Y1),
+      domain = (0, 0.45)),
+    yaxis = Axis(
+      anchor = AxisAnchor.Reference(AxisReference.X1),
+      domain = (0.5, 1)),
+    xaxis2 = Axis(
+      anchor = AxisAnchor.Reference(AxisReference.Y2),
+      domain = (0.55, 1)),
+    yaxis2 = Axis(
+      anchor = AxisAnchor.Reference(AxisReference.X2),
+      domain = (0.8, 1)),
+    xaxis3 = Axis(
+      anchor = AxisAnchor.Reference(AxisReference.Y3),
+      domain = (0.55, 1)),
+    yaxis3 = Axis(
+      anchor = AxisAnchor.Reference(AxisReference.X3),
+      domain = (0.5, 0.75)),
+    xaxis4 = Axis(
+      anchor = AxisAnchor.Reference(AxisReference.Y4),
+      domain = (0, 1)),
+    yaxis4 = Axis(
+      anchor = AxisAnchor.Reference(AxisReference.X4),
+      domain = (0, 0.45))),
+  false,
+  true,
+  true)
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/subplot.png" alt="/img/PlotlyExamplesforScala/subplot.png" title="/img/PlotlyExamplesforScala/subplot.png" /></p>
+
+<h3 id="multiple-axes">Multiple Axes</h3>
+
+<pre><code class="language-scala">val trace1 = Scatter(
+  1 to 3,
+  Seq(40, 50, 60),
+  name = &quot;yaxis data&quot;)
+
+val trace2 = Scatter(
+  2 to 4,
+  Seq(4, 5, 6),
+  name = &quot;yaxis2 data&quot;,
+  yaxis = AxisReference.Y2)
+
+Seq(trace1, trace2).plot(
+  &quot;axes.html&quot;,
+  Layout(
+    title = &quot;Double Y Axis Example&quot;,
+    yaxis = Axis(title = &quot;yaxis title&quot;),
+    yaxis2 = Axis(
+      title = &quot;yaxis2 title&quot;,
+      titlefont = Font(color = Color.RGB(148, 103, 189)),
+      tickfont = Font(color = Color.RGB(148, 103, 189)),
+      overlaying = AxisAnchor.Y,
+      side = Side.Right)),
+  false,
+  true,
+  true)
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/multipleaxes.png" alt="/img/PlotlyExamplesforScala/multipleaxes.png" title="/img/PlotlyExamplesforScala/multipleaxes.png" /></p>
+
+<h3 id="histograms">Histograms</h3>
+
+<pre><code class="language-scala">val r = DenseVector.rand(500)
+val x1 = r * 5.0
+val x2 = r * 10.0
+val y1 = r
+val y2 = r * 2.0
+
+val trace1 = Histogram(
+  r * 5.0,
+  r,
+  name = &quot;control&quot;,
+  autobinx = false,
+  histnorm = HistNorm.Count,
+  marker = Marker(
+    color = Color.RGBA(255, 10, 102, 0.7),
+    line = Line(
+      color = Color.RGBA(255, 100, 102, 1),
+      width = 1)),
+  opacity = 0.5,
+  xbins = Bins(0.5, 2.8, 0.06))
+
+val trace2 = Histogram(
+  r * 10.0,
+  r * 2.0,
+  autobinx = false,
+  marker = Marker(
+    color = Color.RGBA(100, 200, 102, 0.7),
+    line = Line(
+      color = Color.RGBA(100, 200, 102, 1),
+      width = 1)),
+  name = &quot;experimental&quot;,
+  opacity = 0.75,
+  xbins = Bins(-3.2, 4, 0.06))
+
+Seq(trace1, trace2).plot(
+  &quot;histogram.html&quot;,
+  Layout(
+    bargap = 0.05,
+    bargroupgap = 0.2,
+    barmode = BarMode.Overlay,
+    title = &quot;Sampled Results&quot;,
+    xaxis = layout.Axis(title = &quot;Value&quot;),
+    yaxis = layout.Axis(title = &quot;Count&quot;)),
+  false,
+  true,
+  true)
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/histogram.png" alt="/img/PlotlyExamplesforScala/histogram.png" title="/img/PlotlyExamplesforScala/histogram.png" /></p>
+
+<h3 id="box">Box</h3>
+
+<pre><code class="language-scala">val y = Seq(0.75, 5.25, 5.5, 6, 6.2, 6.6, 6.80, 7.0, 7.2, 7.5, 7.5, 7.75, 8.15, 8.15, 8.65, 8.93, 9.2, 9.5, 10, 10.25, 11.5, 12, 16, 20.90, 22.3, 23.25)
+
+val trace1 = Box(
+  y = y,
+  name = &quot;All Points&quot;,
+  jitter = 0.3,
+  pointpos = -1.8,
+  marker = Marker(
+    color = Color.RGB(7, 40, 89)),
+  boxpoints = BoxPoints.All)
+
+val trace2 = Box(
+  y = y,
+  name = &quot;Only Wiskers&quot;,
+  marker = Marker(
+    color = Color.RGB(9, 56, 125)),
+  boxpoints = BoxPoints.False)
+
+val trace3 = Box(
+  y = y,
+  name = &quot;Suspected Outlier&quot;,
+  marker = Marker(
+    color = Color.RGB(8, 81, 156),
+    outliercolor = Color.RGBA(219, 64, 82, 0.6),
+    line = Line(
+      outliercolor = Color.RGBA(219, 64, 82, 1.0),
+      outlierwidth = 2)),
+  boxpoints = BoxPoints.SuspectedOutliers)
+
+val trace4 = Box(
+  y = y,
+  name = &quot;Wiskers and Outliers&quot;,
+  marker = Marker(
+    color = Color.RGB(107, 174, 214)),
+  boxmean = BoxMean.True,
+  boxpoints = BoxPoints.Outliers)
+
+Seq(trace1, trace2, trace3, trace4).plot(title = &quot;Box Plot Styling Outliers&quot;)
+</code></pre>
+
+<p><img src="/img/PlotlyExamplesforScala/box.png" alt="/img/PlotlyExamplesforScala/box.png" title="/img/PlotlyExamplesforScala/box.png" /></p>
+
+
+				</div>
+
+			</div>
+			<div class="col-sm-1 col-md-3 col-md-4">
+			</div>
+		</div>
+	</div>
+
+
+
+
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+
+<script src="https://zwild.github.io/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+
